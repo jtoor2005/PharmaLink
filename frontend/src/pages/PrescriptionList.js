@@ -1,16 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 const PrescriptionList = () => {
     const [prescriptions, setPrescriptions] = useState([]);
+    const [message, setMessage] = useState('');
 
     useEffect(() => {
         const fetchPrescriptions = async () => {
             try {
                 const response = await axios.get('http://localhost:5000/prescriptions');
-                setPrescriptions(response.data);
+                if (response.data.message) {
+                    setMessage(response.data.message); // No prescriptions uploaded yet
+                } else {
+                    setPrescriptions(response.data); // List of uploaded prescriptions
+                }
             } catch (error) {
                 console.error('Error fetching prescriptions:', error);
+                setMessage('Error fetching prescriptions. Please try again.');
             }
         };
 
@@ -18,25 +24,21 @@ const PrescriptionList = () => {
     }, []);
 
     return (
-        <div style={{ padding: '20px', textAlign: 'center' }}>
+        <div style={{ padding: '20px' }}>
             <h2>Uploaded Prescriptions</h2>
-            <ul style={{ listStyleType: 'none', padding: 0 }}>
-                {prescriptions.map((file, index) => (
-                    <li key={index} style={{ marginBottom: '10px' }}>
-                        {file}
-                        <a
-                            href={`http://localhost:5000/download/${file}`}
-                            style={{
-                                marginLeft: '10px',
-                                color: 'blue',
-                                textDecoration: 'underline',
-                            }}
-                        >
-                            Download
-                        </a>
-                    </li>
-                ))}
-            </ul>
+            {message ? (
+                <p>{message}</p>
+            ) : (
+                <ul>
+                    {prescriptions.map((file, index) => (
+                        <li key={index}>
+                            <a href={`http://localhost:5000/uploads/${file}`} download>
+                                {file} (Download)
+                            </a>
+                        </li>
+                    ))}
+                </ul>
+            )}
         </div>
     );
 };

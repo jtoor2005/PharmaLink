@@ -1,0 +1,104 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f2f5; /* Subtle light gray background */
+    color: #333; /* Dark gray text for readability */
+    line-height: 1.6;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Push content slightly down */
+    min-height: 100vh;
+    padding-top: 50px; /* Add space above the content */
+}
+
+/* Main Container */
+.container {
+    width: 90%;
+    max-width: 800px;
+    background-color: #fff; /* White card-like container */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    text-align: center;
+}
+
+/* Header */
+h1 {
+    font-size: 28px; /* Slightly smaller heading */
+    color: #2c3e50; /* Calm blue-gray */
+    margin-bottom: 20px;
+}
+
+p {
+    font-size: 16px; /* Reduce font size for description */
+    margin-bottom: 20px;
+}
+
+/* Navigation Buttons */
+nav {
+    margin: 20px 0;
+    display: flex;
+    justify-content: space-around;
+    gap: 10px;
+}
+
+nav a {
+    text-decoration: none;
+    padding: 8px 15px; /* Slightly smaller buttons */
+    border-radius: 5px;
+    background-color: #007BFF; /* Primary blue */
+    color: white;
+    font-weight: bold;
+    font-size: 14px; /* Slightly smaller font */
+    transition: background-color 0.3s;
+}
+
+nav a:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+/* Sections (Upload, Track, etc.) */
+section {
+    margin-top: 20px;
+    padding: 15px 20px; /* Add more padding for better spacing */
+    background-color: #f8f9fa; /* Lighter gray section background */
+    border-radius: 5px;
+}
+
+/* Buttons */
+button {
+    margin-top: 15px;
+    padding: 8px 15px; /* Smaller button size */
+    background-color: #28a745; /* Success green */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px; /* Reduce button text size */
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #218838; /* Darker green on hover */
+}
+
+/* Footer */
+footer {
+    margin-top: 30px;
+    font-size: 14px;
+    color: #777;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    nav {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
