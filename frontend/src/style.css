@@ -6,7 +6,7 @@ body {
 }
 
 .light-mode {
-    background-color: #d9e9ff; /* Slightly darker light blue */
+    background-color: #f0f8ff; /* Light blue background */
     color: black;
 }
 
@@ -15,35 +15,30 @@ body {
     color: white;
 }
 
-/* Container styles */
-#root {
-    padding: 20px;
-}
-
 /* Header styles */
 h1 {
-    font-size: 36px; /* Larger font size for the title */
-    margin-bottom: 10px;
+    font-size: 36px;
+    margin-bottom: 5px;
 }
 
 p {
-    font-size: 18px; /* Slightly larger text for the subtitle */
+    font-size: 18px;
     margin-bottom: 20px;
 }
 
-/* Navigation Buttons */
+/* Navigation styles */
 nav {
-    margin: 20px 0;
     display: flex;
-    justify-content: center; /* Center the buttons */
-    gap: 10px; /* Adjust spacing between buttons */
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 20px;
 }
 
 nav a {
     text-decoration: none;
     padding: 10px 20px;
     border-radius: 5px;
-    background-color: #007BFF; /* Primary blue */
+    background-color: #007BFF;
     color: white;
     font-weight: bold;
     font-size: 16px;
@@ -51,25 +46,11 @@ nav a {
 }
 
 nav a:hover {
-    background-color: #0056b3; /* Darker blue on hover */
+    background-color: #0056b3;
 }
 
-/* Dark mode-specific button styles */
-.light-mode nav a {
-    background-color: #007BFF;
-}
-
-.dark-mode nav a {
-    background-color: #333;
-}
-
-.dark-mode nav a:hover {
-    background-color: #444;
-}
-
-/* Toggle Button */
+/* Toggle Button styles */
 button {
-    margin-top: 15px;
     padding: 10px 15px;
     background-color: #28a745;
     color: white;
