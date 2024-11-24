@@ -1,46 +1,26 @@
 const express = require('express');
-const cors = require('cors');
 const multer = require('multer');
+const cors = require('cors');
+const path = require('path');
 
 const app = express();
-
-// Middleware
-app.use(cors({
-    origin: 'http://localhost:3000', // Allow requests from frontend
-    methods: ['GET', 'POST'],        // Specify allowed HTTP methods
-    credentials: true               // Enable cookies if needed
-}));
-app.use(express.json()); // Parse JSON requests
-
-// File upload configuration using multer
 const upload = multer({ dest: 'uploads/' });
 
-// Root Route
-app.get('/', (req, res) => {
-    res.send('Welcome to PharmaLink Backend!');
-});
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// Tracking Route
-app.get('/tracking/:id', (req, res) => {
-    const trackingInfo = {
-        id: req.params.id,
-        status: 'In Transit',
-        estimatedDelivery: '2024-11-24 3:00 PM',
-    };
-    res.json(trackingInfo);
-});
-
-// File Upload Route
-app.post('/upload', upload.single('file'), (req, res) => {
+// Endpoint to upload prescriptions
+app.post('/upload-prescription', upload.single('file'), (req, res) => {
     if (!req.file) {
         return res.status(400).json({ message: 'No file uploaded' });
     }
-    res.json({ message: 'File uploaded successfully', fileName: req.file.originalname });
+    res.status(200).json({ message: 'Prescription uploaded successfully', filename: req.file.filename });
 });
 
-// Catch-All Route for Undefined Endpoints
-app.use((req, res) => {
-    res.status(404).send('Route not found. Please check the endpoint!');
+// Basic health check endpoint
+app.get('/', (req, res) => {
+    res.send('Backend is running...');
 });
 
 // Start the server
