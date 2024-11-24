@@ -1,29 +1,31 @@
 import './style.css';
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import PrescriptionUpload from './pages/PrescriptionUpload';
 import PrescriptionList from './pages/PrescriptionList';
 import OrderTracking from './pages/OrderTracking';
 import Telepharmacy from './pages/Telepharmacy';
 
-
-
 const App = () => {
+    const [darkMode, setDarkMode] = useState(false);
+
+    const toggleDarkMode = () => {
+        setDarkMode(!darkMode);
+        document.body.className = darkMode ? 'light-mode' : 'dark-mode';
+    };
+
     return (
         <Router>
             <div style={{ textAlign: 'center', margin: '20px' }}>
                 <h1>Welcome to PharmaLink</h1>
                 <p>Your one-stop solution for remote pharmacy services.</p>
+                <button onClick={toggleDarkMode} style={{ marginBottom: '20px' }}>
+                    Toggle {darkMode ? 'Light' : 'Dark'} Mode
+                </button>
                 <nav>
-                    <Link to="/upload" style={{ marginRight: '20px' }}>
-                        Upload Prescription
-                    </Link>
-                    <Link to="/prescriptions" style={{ marginRight: '20px' }}>
-                        View Prescriptions
-                    </Link>
-                    <Link to="/track-order" style={{ marginRight: '20px' }}>
-                        Track Order
-                    </Link>
+                    <Link to="/upload">Upload Prescription</Link>
+                    <Link to="/prescriptions">View Prescriptions</Link>
+                    <Link to="/track-order">Track Order</Link>
                     <Link to="/telepharmacy">Telepharmacy</Link>
                 </nav>
             </div>
