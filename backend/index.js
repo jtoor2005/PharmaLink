@@ -1,9 +1,9 @@
 const express = require('express');
 const cors = require('cors');
 const multer = require('multer');
-const pdfParse = require('pdf-parse');
 const fs = require('fs');
 const path = require('path');
+const pdfParse = require('pdf-parse');
 
 const app = express();
 app.use(cors());
@@ -16,7 +16,7 @@ const upload = multer({ dest: 'uploads/' });
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Upload Prescription Route
-app.post('/upload-prescription', upload.single('file'), (req, res) => {
+app.post('/upload-prescription', upload.single('file'), async (req, res) => {
     if (!req.file) {
         return res.status(400).json({ message: 'No file uploaded' });
     }
@@ -27,22 +27,33 @@ app.post('/upload-prescription', upload.single('file'), (req, res) => {
     if (req.file.mimetype === 'application/pdf') {
         const fileBuffer = fs.readFileSync(filePath);
 
-        pdfParse(fileBuffer)
-            .then((data) => {
-                const extractedText = data.text;
-                const verificationResults = verifyPrescription(extractedText);
+        try {
+            const data = await pdfParse(fileBuffer);
+            const extractedText = data.text;
 
-                res.status(200).json({
-                    message: 'File processed successfully',
-                    verificationResults,
-                });
-            })
-            .catch((err) => {
-                console.error(err);
-                res.status(500).json({ message: 'Error processing PDF file', error: err.message });
+            const validationResults = {
+                extractedText: extractedText || 'No text extracted.',
+                validDoctor: extractedText.includes('Dr. Emily Carter'),
+                validMedication:
+                    extractedText.includes('Amoxicillin') &&
+                    extractedText.includes('Paracetamol') &&
+                    extractedText.includes('Ibuprofen'),
+            };
+
+            res.status(200).json({
+                message: 'File processed successfully',
+                validationResults,
             });
+        } catch (err) {
+            console.error('Error processing PDF:', err);
+
+            // Delete the file in case of error
+            fs.unlinkSync(filePath);
+            return res.status(500).json({ message: 'Error processing PDF file', error: err.message });
+        }
     } else {
         // Handle unsupported file types
+        fs.unlinkSync(filePath);
         res.status(400).json({ message: 'Unsupported file type. Please upload a PDF.' });
     }
 });
@@ -54,19 +65,15 @@ app.get('/prescriptions', (req, res) => {
     fs.readdir(uploadDir, (err, files) => {
         if (err) {
             console.error('Error reading uploads directory:', err);
-            return res.status(500).json({ message: 'Error reading uploaded files' });
+            return res.status(500).json({ message: 'Error fetching prescriptions' });
         }
 
-        // Return an empty message if no files are found
-        if (files.length === 0) {
-            return res.status(200).json({ message: 'No prescriptions uploaded yet.' });
-        }
-
-        res.status(200).json(files);
+        const pdfFiles = files.filter((file) => file.endsWith('.pdf')); // Only fetch .pdf files
+        res.status(200).json(pdfFiles);
     });
 });
 
-// Order Tracking Route
+// Track Order Route
 const orders = {
     '123': { status: 'In Transit', estimatedDelivery: '2024-11-24 3:00 PM' },
     '124': { status: 'Delivered', estimatedDelivery: '2024-11-20 1:00 PM' },
@@ -85,28 +92,3 @@ const PORT = 5000;
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
-
-// Utility function for verification
-const doctorsDatabase = ['Dr. Smith', 'Dr. Johnson', 'Dr. Patel', 'Dr. Emily Carter'];
-const medicationsDatabase = ['Paracetamol', 'Ibuprofen', 'Amoxicillin'];
-
-const verifyPrescription = (extractedText) => {
-    const cleanedText = extractedText.toLowerCase().replace(/\s+/g, ' '); // Normalize text
-    const results = {
-        validDoctor: false,
-        validMedication: false,
-        extractedText: extractedText,
-    };
-
-    // Check for doctor credentials
-    results.validDoctor = doctorsDatabase.some((doctor) =>
-        cleanedText.includes(doctor.toLowerCase())
-    );
-
-    // Check for medication names
-    results.validMedication = medicationsDatabase.some((med) =>
-        cleanedText.includes(med.toLowerCase())
-    );
-
-    return results;
-};

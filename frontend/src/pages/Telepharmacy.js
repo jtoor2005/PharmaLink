@@ -67,47 +67,77 @@ const Telepharmacy = () => {
         setCallInProgress(true);
     };
 
+    const endCall = () => {
+        if (peerConnection.current) {
+            peerConnection.current.close();
+            peerConnection.current = null;
+        }
+
+        localVideoRef.current.srcObject = null;
+        remoteVideoRef.current.srcObject = null;
+
+        setCallInProgress(false);
+    };
+
     return (
-        <div style={{ textAlign: 'center', padding: '20px' }}>
+        <div className="telepharmacy-container" style={{ textAlign: 'center', padding: '20px' }}>
             <h2>Telepharmacy Video Consultation</h2>
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '20px' }}>
-                <div>
+            <div className="video-container" style={{ display: 'flex', justifyContent: 'center', gap: '20px' }}>
+                <div className="video-box" style={{ textAlign: 'center' }}>
                     <video
                         ref={localVideoRef}
                         autoPlay
                         muted
                         style={{
-                            width: '300px',
-                            height: '200px',
+                            width: '320px', // Slightly larger width
+                            height: '240px', // Slightly larger height
                             backgroundColor: 'black',
+                            border: '1px solid gray',
                         }}
                     ></video>
                     <p>Local Video</p>
                 </div>
-                <div>
+                <div className="video-box" style={{ textAlign: 'center' }}>
                     <video
                         ref={remoteVideoRef}
                         autoPlay
                         style={{
-                            width: '300px',
-                            height: '200px',
+                            width: '320px', // Slightly larger width
+                            height: '240px', // Slightly larger height
                             backgroundColor: 'black',
+                            border: '1px solid gray',
                         }}
                     ></video>
-                    <p>Remote Video</p>
+                    <p>{callInProgress ? 'Remote Video' : 'Waiting for remote peer...'}</p>
                 </div>
             </div>
-            {!callInProgress && (
-                <button onClick={startLocalStream} style={{ margin: '10px' }}>
-                    Start Camera
-                </button>
-            )}
-            {!callInProgress && (
-                <button onClick={startCall} style={{ margin: '10px' }}>
-                    Start Call
-                </button>
-            )}
-            {callInProgress && <p>Call in progress...</p>}
+            <div className="controls">
+                {!callInProgress && (
+                    <>
+                        <button onClick={startLocalStream} style={{ margin: '10px' }}>
+                            Start Camera
+                        </button>
+                        <button onClick={startCall} style={{ margin: '10px' }}>
+                            Start Call
+                        </button>
+                    </>
+                )}
+                {callInProgress && (
+                    <button
+                        onClick={endCall}
+                        style={{
+                            backgroundColor: 'red',
+                            color: 'white',
+                            border: 'none',
+                            padding: '10px 20px',
+                            borderRadius: '5px',
+                            margin: '10px',
+                        }}
+                    >
+                        End Call
+                    </button>
+                )}
+            </div>
         </div>
     );
 };

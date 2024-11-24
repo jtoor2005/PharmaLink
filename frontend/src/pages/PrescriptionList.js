@@ -1,22 +1,24 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 
 const PrescriptionList = () => {
     const [prescriptions, setPrescriptions] = useState([]);
-    const [message, setMessage] = useState('');
+    const [error, setError] = useState('');
 
     useEffect(() => {
         const fetchPrescriptions = async () => {
             try {
-                const response = await axios.get('http://localhost:5000/prescriptions');
-                if (response.data.message) {
-                    setMessage(response.data.message); // No prescriptions uploaded yet
+                const response = await fetch('http://localhost:5000/prescriptions');
+                const data = await response.json();
+
+                if (response.ok) {
+                    setPrescriptions(data);
+                    setError('');
                 } else {
-                    setPrescriptions(response.data); // List of uploaded prescriptions
+                    setError(data.message || 'Failed to fetch prescriptions');
                 }
-            } catch (error) {
-                console.error('Error fetching prescriptions:', error);
-                setMessage('Error fetching prescriptions. Please try again.');
+            } catch (err) {
+                console.error('Error fetching prescriptions:', err);
+                setError('Failed to fetch prescriptions. Please try again.');
             }
         };
 
@@ -24,21 +26,19 @@ const PrescriptionList = () => {
     }, []);
 
     return (
-        <div style={{ padding: '20px' }}>
+        <div>
             <h2>Uploaded Prescriptions</h2>
-            {message ? (
-                <p>{message}</p>
-            ) : (
-                <ul>
-                    {prescriptions.map((file, index) => (
-                        <li key={index}>
-                            <a href={`http://localhost:5000/uploads/${file}`} download>
-                                {file} (Download)
-                            </a>
-                        </li>
-                    ))}
-                </ul>
-            )}
+            {error && <p style={{ color: 'red' }}>{error}</p>}
+            {!error && prescriptions.length === 0 && <p>No prescriptions uploaded yet.</p>}
+            <ul>
+                {prescriptions.map((file, index) => (
+                    <li key={index}>
+                        <a href={`http://localhost:5000/uploads/${file}`} download>
+                            {file}
+                        </a>
+                    </li>
+                ))}
+            </ul>
         </div>
     );
 };

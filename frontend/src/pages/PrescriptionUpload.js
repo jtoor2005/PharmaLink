@@ -1,54 +1,75 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 
 const PrescriptionUpload = () => {
     const [file, setFile] = useState(null);
+    const [extractedText, setExtractedText] = useState('');
+    const [validationResults, setValidationResults] = useState(null);
     const [message, setMessage] = useState('');
-    const [verificationResults, setVerificationResults] = useState(null);
+    const [error, setError] = useState('');
+
+    const handleFileChange = (e) => {
+        setFile(e.target.files[0]);
+    };
 
     const handleUpload = async () => {
+        if (!file) {
+            setError('Please select a file first.');
+            return;
+        }
+
         const formData = new FormData();
         formData.append('file', file);
 
         try {
-            const response = await axios.post('http://localhost:5000/upload-prescription', formData);
-            setMessage(response.data.message);
-            setVerificationResults(response.data.verificationResults);
-        } catch (error) {
-            setMessage('Error uploading prescription.');
-            console.error(error);
+            const response = await fetch('http://localhost:5000/upload-prescription', {
+                method: 'POST',
+                body: formData,
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                setMessage(result.message);
+                setValidationResults(result.validationResults);
+                setExtractedText(result.validationResults.extractedText);
+                setError('');
+            } else {
+                setError(result.message || 'Error uploading prescription');
+                setValidationResults(null);
+                setExtractedText('');
+            }
+        } catch (err) {
+            console.error('Error uploading prescription:', err);
+            setError('Failed to upload prescription. Please try again.');
+            setValidationResults(null);
+            setExtractedText('');
         }
     };
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '50px' }}>
-            <h2 style={{ marginBottom: '20px' }}>Upload Prescription</h2>
-            <input
-                type="file"
-                onChange={(e) => setFile(e.target.files[0])}
-                style={{ marginBottom: '10px' }}
-            />
-            <button
-                onClick={handleUpload}
-                style={{
-                    padding: '10px 20px',
-                    backgroundColor: '#007BFF',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '5px',
-                    cursor: 'pointer',
-                }}
-            >
-                Upload
-            </button>
-            {message && <p style={{ marginTop: '20px', color: 'green' }}>{message}</p>}
-            {verificationResults && (
-                <div style={{ marginTop: '30px', textAlign: 'left', width: '50%' }}>
-                    <h3>Verification Results:</h3>
-                    <p><strong>Extracted Text:</strong></p>
-                    <pre style={{ background: '#f9f9f9', padding: '10px' }}>{verificationResults.extractedText}</pre>
-                    <p><strong>Doctor Valid:</strong> {verificationResults.validDoctor ? 'Yes' : 'No'}</p>
-                    <p><strong>Medication Valid:</strong> {verificationResults.validMedication ? 'Yes' : 'No'}</p>
+        <div>
+            <h2>Upload Prescription</h2>
+            <input type="file" onChange={handleFileChange} />
+            <button onClick={handleUpload}>Upload</button>
+
+            {message && <p style={{ color: 'green' }}>{message}</p>}
+            {error && <p style={{ color: 'red' }}>{error}</p>}
+
+            {validationResults && (
+                <div>
+                    <h3>Validation Results</h3>
+                    <p>
+                        <strong>Extracted Text:</strong>
+                    </p>
+                    <pre style={{ background: '#f9f9f9', padding: '10px', border: '1px solid #ccc' }}>
+                        {extractedText}
+                    </pre>
+                    <p>
+                        <strong>Doctor Valid:</strong> {validationResults.validDoctor ? 'Yes' : 'No'}
+                    </p>
+                    <p>
+                        <strong>Medication Valid:</strong> {validationResults.validMedication ? 'Yes' : 'No'}
+                    </p>
                 </div>
             )}
         </div>
