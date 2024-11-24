@@ -2,8 +2,8 @@ import React from 'react';
 
 const Home = () => {
     return (
-        <div>
-            <p>Welcome to the PharmaLink platform! Explore our services to manage your pharmacy needs.</p>
+        <div style={{ textAlign: 'center', marginTop: '20px' }}>
+            <p>Explore our services to manage your pharmacy needs.</p>
         </div>
     );
 };

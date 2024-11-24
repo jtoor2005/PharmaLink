@@ -1,3 +1,47 @@
+/* FAQ Styles */
+.faq-container {
+    max-width: 800px;
+    margin: 20px auto;
+    text-align: left;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: inherit; /* Match the theme background */
+}
+
+.faq-item {
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 5px;
+}
+
+.faq-question {
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    margin: 0;
+    background-color: transparent; /* No background for question */
+    color: inherit; /* Match the theme text color */
+}
+
+.faq-answer {
+    font-size: 16px;
+    margin-top: 5px;
+    padding: 10px;
+    border-radius: 5px;
+    display: none; /* Hidden by default */
+    color: #003366; /* Dark blue font for answers in light mode */
+    background-color: #ffffff; /* White background in light mode */
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* Dark mode-specific answer styles */
+.dark-mode .faq-answer {
+    background-color: #1e1e1e; /* Dark gray background for dark mode */
+    color: #87CEEB; /* Light blue text for better contrast */
+}
+
+/* Other existing styles remain unchanged */
+
 /* Body styles */
 body {
     margin: 0;
@@ -6,7 +50,7 @@ body {
 }
 
 .light-mode {
-    background-color: #f0f8ff; /* Light blue background */
+    background-color: #d3e7f3; /* Light blue background */
     color: black;
 }
 
