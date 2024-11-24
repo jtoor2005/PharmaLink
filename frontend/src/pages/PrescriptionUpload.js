@@ -1,16 +1,11 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Button, Typography, TextField } from '@mui/material';
 
 const PrescriptionUpload = () => {
     const [file, setFile] = useState(null);
     const [message, setMessage] = useState('');
 
     const handleUpload = async () => {
-        if (!file) {
-            setMessage('Please select a file.');
-            return;
-        }
         const formData = new FormData();
         formData.append('file', file);
 
@@ -23,21 +18,13 @@ const PrescriptionUpload = () => {
     };
 
     return (
-        <div style={{ textAlign: 'center', margin: '20px' }}>
-            <Typography variant="h4">Upload Prescription</Typography>
-            <TextField
-                type="file"
-                inputProps={{ accept: '.jpg,.jpeg,.png,.pdf' }}
-                onChange={(e) => setFile(e.target.files[0])}
-                style={{ marginTop: '20px', marginBottom: '20px' }}
-            />
-            <Button variant="contained" color="primary" onClick={handleUpload}>
-                Upload
-            </Button>
-            {message && <Typography style={{ marginTop: '10px' }}>{message}</Typography>}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '50px' }}>
+            <h2>Upload Prescription</h2>
+            <input type="file" onChange={(e) => setFile(e.target.files[0])} style={{ marginBottom: '10px' }} />
+            <button onClick={handleUpload}>Upload</button>
+            {message && <p style={{ marginTop: '20px', color: 'green' }}>{message}</p>}
         </div>
     );
 };
 
 export default PrescriptionUpload;
-
