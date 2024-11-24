@@ -6,8 +6,7 @@ PharmaLink is a secure and comprehensive platform for remote pharmacy services, 
 - Telepharmacy Video Consultation
 - AI-Powered Prescription Verification
 - Medication Delivery and Tracking
-- Chronic Disease Management Dashboard
-- Regulatory Compliance and Audit Trail
+and more!
 
 ## Folder Structure
 - **frontend/**: React.js or Vue.js code for the user interface.
